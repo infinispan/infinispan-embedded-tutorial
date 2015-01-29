@@ -8,15 +8,17 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.infinispan.Cache;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class OpenWeatherMapService implements WeatherService {
+public class OpenWeatherMapService extends CachingWeatherService {
    final private static String OWM_BASE_URL = "http://api.openweathermap.org/data/2.5/weather";
    private DocumentBuilder db;
    private final String apiKey;
 
-   public OpenWeatherMapService(String apiKey) {
+   public OpenWeatherMapService(String apiKey, Cache<String, LocationWeather> cache) {
+      super(cache);
       this.apiKey = apiKey;
       DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
       try {
@@ -48,7 +50,7 @@ public class OpenWeatherMapService implements WeatherService {
    }
 
    @Override
-   public LocationWeather getWeatherForLocation(String location) {
+   protected LocationWeather fetchWeather(String location) {
 
       Document dom = fetchData(location);
       Element current = (Element) dom.getElementsByTagName("current").item(0);

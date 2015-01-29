@@ -1,13 +1,11 @@
 package org.infinispan.tutorial.embedded;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
 import org.infinispan.Cache;
-import org.infinispan.configuration.cache.CacheMode;
-import org.infinispan.configuration.cache.ConfigurationBuilder;
-import org.infinispan.configuration.global.GlobalConfigurationBuilder;
 import org.infinispan.distexec.mapreduce.MapReduceTask;
 import org.infinispan.manager.DefaultCacheManager;
 import org.infinispan.manager.EmbeddedCacheManager;
@@ -22,14 +20,8 @@ public class WeatherApp {
    private Cache<String, LocationWeather> cache;
    private final ClusterListener listener;
 
-   public WeatherApp() throws InterruptedException {
-      GlobalConfigurationBuilder global = GlobalConfigurationBuilder.defaultClusteredBuilder();
-      global.transport().clusterName("WeatherApp");
-      ConfigurationBuilder config = new ConfigurationBuilder();
-      config.expiration().lifespan(5, TimeUnit.SECONDS)
-         .clustering().cacheMode(CacheMode.DIST_SYNC)
-            .hash().groups().enabled().addGrouper(new LocationWeather.LocationGrouper());
-      cacheManager = new DefaultCacheManager(global.build(), config.build());
+   public WeatherApp() throws InterruptedException, IOException {
+      cacheManager = new DefaultCacheManager(WeatherApp.class.getResourceAsStream("/weatherapp-infinispan.xml"));
       listener = new ClusterListener(2);
       cacheManager.addListener(listener);
       cache = cacheManager.getCache();

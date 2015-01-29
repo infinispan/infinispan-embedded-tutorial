@@ -1,6 +1,8 @@
 package org.infinispan.tutorial.embedded;
 
-public class LocationWeather {
+import java.io.Serializable;
+
+public class LocationWeather implements Serializable {
    final float temperature;
    final String conditions;
    final String country;

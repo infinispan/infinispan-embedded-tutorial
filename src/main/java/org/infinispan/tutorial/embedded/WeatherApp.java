@@ -3,7 +3,9 @@ package org.infinispan.tutorial.embedded;
 import java.util.concurrent.TimeUnit;
 
 import org.infinispan.Cache;
+import org.infinispan.configuration.cache.CacheMode;
 import org.infinispan.configuration.cache.ConfigurationBuilder;
+import org.infinispan.configuration.global.GlobalConfigurationBuilder;
 import org.infinispan.manager.DefaultCacheManager;
 import org.infinispan.manager.EmbeddedCacheManager;
 
@@ -17,9 +19,13 @@ public class WeatherApp {
    private Cache<String, LocationWeather> cache;
 
    public WeatherApp() throws InterruptedException {
-      cacheManager = new DefaultCacheManager();
+      GlobalConfigurationBuilder global = GlobalConfigurationBuilder.defaultClusteredBuilder();
+      global.transport().clusterName("WeatherApp");
+      cacheManager = new DefaultCacheManager(global.build());
       ConfigurationBuilder config = new ConfigurationBuilder();
-      config.expiration().lifespan(5, TimeUnit.SECONDS);
+      config
+          .expiration().lifespan(5, TimeUnit.SECONDS)
+          .clustering().cacheMode(CacheMode.DIST_SYNC);
       cacheManager.defineConfiguration("weather", config.build());
       cache = cacheManager.getCache("weather");
       weatherService = initWeatherService(cache);

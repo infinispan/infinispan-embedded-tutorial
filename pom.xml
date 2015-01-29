@@ -3,10 +3,14 @@
   <groupId>org.infinispan.tutorial</groupId>
   <artifactId>infinispan-embedded-tutorial</artifactId>
   <version>1.0.0-SNAPSHOT</version>
-
   <name>Infinispan Tutorial: Embedded tutorial</name>
 
   <dependencies>
+    <dependency>
+      <groupId>org.infinispan</groupId>
+      <artifactId>infinispan-embedded</artifactId>
+      <version>9.0.0.Final</version>
+    </dependency>
   </dependencies>
 
   <build>

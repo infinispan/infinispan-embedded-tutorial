@@ -17,11 +17,14 @@ public class WeatherApp {
    private final EmbeddedCacheManager cacheManager;
    private final WeatherService weatherService;
    private Cache<String, LocationWeather> cache;
+   private final ClusterListener listener;
 
    public WeatherApp() throws InterruptedException {
       GlobalConfigurationBuilder global = GlobalConfigurationBuilder.defaultClusteredBuilder();
       global.transport().clusterName("WeatherApp").serialization().addContextInitializer(new SerializationContextInitializerImpl());
       cacheManager = new DefaultCacheManager(global.build());
+      listener = new ClusterListener(2);
+      cacheManager.addListener(listener);
       ConfigurationBuilder config = new ConfigurationBuilder();
       config
           .expiration().lifespan(5, TimeUnit.SECONDS)
@@ -29,6 +32,9 @@ public class WeatherApp {
       cacheManager.defineConfiguration("weather", config.build());
       cache = cacheManager.getCache("weather");
       weatherService = initWeatherService(cache);
+
+      System.out.println("---- Waiting for cluster to form ----");
+      listener.clusterFormedLatch.await();
    }
 
    private WeatherService initWeatherService(Cache<String,LocationWeather> cache) {
@@ -51,7 +57,10 @@ public class WeatherApp {
       System.out.printf("---- Fetched in %dms ----\n", System.currentTimeMillis() - start);
    }
 
-   public void shutdown() {
+   public void shutdown() throws InterruptedException {
+      if (!cacheManager.isCoordinator()) {
+         listener.shutdownLatch.await();
+      }
       cacheManager.stop();
    }
 

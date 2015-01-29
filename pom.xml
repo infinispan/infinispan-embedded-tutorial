@@ -1,0 +1,48 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.infinispan.tutorial</groupId>
+  <artifactId>infinispan-embedded-tutorial</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+
+  <name>Infinispan Tutorial: Embedded tutorial</name>
+
+  <dependencies>
+  </dependencies>
+
+  <build>
+     <plugins>
+        <plugin>
+           <groupId>org.apache.maven.plugins</groupId>
+           <artifactId>maven-compiler-plugin</artifactId>
+           <version>3.5.1</version>
+           <configuration>
+              <source>1.8</source>
+              <target>1.8</target>
+            </configuration>
+        </plugin>
+        <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.4.0</version>
+            <executions>
+               <execution>
+                  <goals>
+                     <goal>exec</goal>
+                  </goals>
+               </execution>
+            </executions>
+            <configuration>
+               <executable>java</executable>
+               <arguments>
+                   <argument>-Djava.net.preferIPv4Stack=true</argument>
+                   <argument>-Djava.util.logging.config.file=src/main/resources/logging.properties</argument>
+                   <argument>-classpath</argument>
+                   <classpath/>
+                   <argument>org.infinispan.tutorial.embedded.WeatherApp</argument>
+               </arguments>
+            </configuration>
+         </plugin>
+      </plugins>
+   </build>
+</project>
+

@@ -1,5 +1,7 @@
 package org.infinispan.tutorial.embedded;
 
+import java.util.concurrent.TimeUnit;
+
 import org.infinispan.Cache;
 import org.infinispan.manager.DefaultCacheManager;
 import org.infinispan.manager.EmbeddedCacheManager;
@@ -45,6 +47,10 @@ public class WeatherApp {
       WeatherApp app = new WeatherApp();
 
       app.fetchWeather();
+
+      app.fetchWeather();
+
+      TimeUnit.SECONDS.sleep(5);
 
       app.fetchWeather();
 

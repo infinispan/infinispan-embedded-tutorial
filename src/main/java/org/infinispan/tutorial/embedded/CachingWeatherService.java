@@ -1,5 +1,7 @@
 package org.infinispan.tutorial.embedded;
 
+import java.util.concurrent.TimeUnit;
+
 import org.infinispan.Cache;
 
 public abstract class CachingWeatherService implements WeatherService {
@@ -14,7 +16,7 @@ public abstract class CachingWeatherService implements WeatherService {
       LocationWeather weather = cache.get(location);
       if (weather == null) {
          weather = fetchWeather(location);
-         cache.put(location, weather);
+         cache.put(location, weather, 5, TimeUnit.SECONDS);
       }
       return weather;
    }

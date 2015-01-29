@@ -18,7 +18,9 @@ public class WeatherApp {
 
    public WeatherApp() throws InterruptedException {
       cacheManager = new DefaultCacheManager();
-      cacheManager.defineConfiguration("weather", new ConfigurationBuilder().build());
+      ConfigurationBuilder config = new ConfigurationBuilder();
+      config.expiration().lifespan(5, TimeUnit.SECONDS);
+      cacheManager.defineConfiguration("weather", config.build());
       cache = cacheManager.getCache("weather");
       weatherService = initWeatherService(cache);
    }

@@ -28,7 +28,8 @@ public class WeatherApp {
       ConfigurationBuilder config = new ConfigurationBuilder();
       config
           .expiration().lifespan(5, TimeUnit.SECONDS)
-          .clustering().cacheMode(CacheMode.DIST_SYNC);
+          .clustering().cacheMode(CacheMode.DIST_SYNC)
+              .hash().groups().enabled().addGrouper(new LocationWeather.LocationGrouper());
       cacheManager.defineConfiguration("weather", config.build());
       cache = cacheManager.getCache("weather");
       cache.addListener(new CacheListener());

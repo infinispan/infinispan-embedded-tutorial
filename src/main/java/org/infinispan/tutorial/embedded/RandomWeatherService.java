@@ -3,15 +3,18 @@ package org.infinispan.tutorial.embedded;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-public class RandomWeatherService implements WeatherService {
+import org.infinispan.Cache;
+
+public class RandomWeatherService extends CachingWeatherService {
    final Random random;
 
-   public RandomWeatherService() {
+   public RandomWeatherService(Cache<String, LocationWeather> cache) {
+      super(cache);
       random = new Random();
    }
 
    @Override
-   public LocationWeather getWeatherForLocation(String location) {
+   protected LocationWeather fetchWeather(String location) {
       try {
          TimeUnit.MILLISECONDS.sleep(200);
       } catch (InterruptedException e) {}

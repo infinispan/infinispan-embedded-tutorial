@@ -29,6 +29,7 @@ public class WeatherApp {
       listener = new ClusterListener(2);
       cacheManager.addListener(listener);
       cache = cacheManager.getCache();
+      cache.addListener(new CacheListener());
       weatherService = initWeatherService(cache);
 
       System.out.println("---- Waiting for cluster to form ----");
@@ -63,13 +64,16 @@ public class WeatherApp {
    public static void main(String[] args) throws Exception {
       WeatherApp app = new WeatherApp();
 
-      app.fetchWeather();
+      if (app.cacheManager.isCoordinator()) {
 
-      app.fetchWeather();
+         app.fetchWeather();
 
-      TimeUnit.SECONDS.sleep(5);
+         app.fetchWeather();
 
-      app.fetchWeather();
+         TimeUnit.SECONDS.sleep(5);
+
+         app.fetchWeather();
+      }
 
       app.shutdown();
    }

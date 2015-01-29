@@ -1,5 +1,6 @@
 package org.infinispan.tutorial.embedded;
 
+import org.infinispan.Cache;
 import org.infinispan.manager.DefaultCacheManager;
 import org.infinispan.manager.EmbeddedCacheManager;
 
@@ -10,17 +11,19 @@ public class WeatherApp {
          "Toronto, Canada", "Lisbon, Portugal", "Porto, Portugal", "Raleigh, USA", "Washington, USA" };
    private final EmbeddedCacheManager cacheManager;
    private final WeatherService weatherService;
+   private Cache<String, LocationWeather> cache;
 
    public WeatherApp() throws InterruptedException {
       cacheManager = new DefaultCacheManager();
-      weatherService = initWeatherService();
+      cache = cacheManager.getCache();
+      weatherService = initWeatherService(cache);
    }
 
-   private WeatherService initWeatherService() {
+   private WeatherService initWeatherService(Cache<String,LocationWeather> cache) {
       if (System.getProperty("random.weather.service") != null) {
-         return new RandomWeatherService();
+         return new RandomWeatherService(cache);
       } else {
-         return new OpenWeatherMapService();
+         return new OpenWeatherMapService(cache);
       }
    }
 

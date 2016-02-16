@@ -28,7 +28,7 @@ the pom.xml file that enables the random weather service.
 
 ### JDK
 
-- Get a [JDK][jdk-download]. You will need version 1.7 or higher
+- Get a [JDK][jdk-download]. You will need version 1.8 or higher
 
 ### Maven
 
@@ -82,9 +82,9 @@ To see the changes between any two lessons use the git diff command.
 
 - Implement a custom externalizer for our value class
 
-### step-10/mapreduce
+### step-10/streams
 
-- Use Map/Reduce to compute temperature averages per country
+- Use Distributed Streams to compute temperature averages per country
 
 ### step-11/declarative-configuration
 

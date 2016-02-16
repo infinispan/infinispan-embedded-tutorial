@@ -6,9 +6,12 @@ import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
 import org.infinispan.Cache;
-import org.infinispan.distexec.mapreduce.MapReduceTask;
 import org.infinispan.manager.DefaultCacheManager;
 import org.infinispan.manager.EmbeddedCacheManager;
+import org.infinispan.stream.CacheCollectors;
+
+import static java.util.stream.Collectors.averagingDouble;
+import static java.util.stream.Collectors.groupingBy;
 
 public class WeatherApp {
 
@@ -52,10 +55,10 @@ public class WeatherApp {
 
    public void computeCountryAverages() {
       System.out.println("---- Average country temperatures ----");
-      MapReduceTask<String, LocationWeather, String, Float> countryTemperatureTask = new MapReduceTask<String, LocationWeather, String, Float>(cache);
-      countryTemperatureTask.mappedWith(new CountryTemperatureMapper()).reducedWith(new CountryTemperatureReducer());
-      Map<String, Float> averages = countryTemperatureTask.execute();
-      for(Entry<String, Float> entry : averages.entrySet()) {
+      Map<String, Double> averages = cache.entrySet().stream()
+              .collect(CacheCollectors.serializableCollector(() -> groupingBy(Map.Entry::getKey,
+                      averagingDouble(e -> e.getValue().temperature))));
+      for(Entry<String, Double> entry : averages.entrySet()) {
          System.out.printf("Average temperature in %s is %.1f° C\n", entry.getKey(), entry.getValue());
       }
    }

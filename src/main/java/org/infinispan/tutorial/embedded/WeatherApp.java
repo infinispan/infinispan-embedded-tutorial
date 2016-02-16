@@ -1,13 +1,19 @@
 package org.infinispan.tutorial.embedded;
 
-import java.util.concurrent.TimeUnit;
-
 import org.infinispan.Cache;
 import org.infinispan.configuration.cache.CacheMode;
 import org.infinispan.configuration.cache.ConfigurationBuilder;
 import org.infinispan.configuration.global.GlobalConfigurationBuilder;
 import org.infinispan.manager.DefaultCacheManager;
 import org.infinispan.manager.EmbeddedCacheManager;
+import org.infinispan.stream.CacheCollectors;
+
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.TimeUnit;
+
+import static java.util.stream.Collectors.averagingDouble;
+import static java.util.stream.Collectors.groupingBy;
 
 public class WeatherApp {
 
@@ -55,6 +61,16 @@ public class WeatherApp {
       System.out.printf("---- Fetched in %dms ----\n", System.currentTimeMillis() - start);
    }
 
+   public void computeCountryAverages() {
+      System.out.println("---- Average country temperatures ----");
+      Map<String, Double> averages = cache.entrySet().stream()
+              .collect(CacheCollectors.serializableCollector(() -> groupingBy(Map.Entry::getKey,
+                      averagingDouble(e -> e.getValue().temperature))));
+      for(Entry<String, Double> entry : averages.entrySet()) {
+         System.out.printf("Average temperature in %s is %.1f° C\n", entry.getKey(), entry.getValue());
+      }
+   }
+
    public void shutdown() throws InterruptedException {
       if (!cacheManager.isCoordinator()) {
          listener.shutdownLatch.await();
@@ -74,6 +90,8 @@ public class WeatherApp {
          TimeUnit.SECONDS.sleep(5);
 
          app.fetchWeather();
+
+         app.computeCountryAverages();
       }
 
       app.shutdown();

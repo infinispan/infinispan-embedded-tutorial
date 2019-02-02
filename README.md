@@ -98,9 +98,11 @@ To see the changes between any two lessons use the git diff command.
 - Run `mvn clean package` to rebuild the application
 - Run `mvn exec:exec` to execute the application. In case you're running a clustered step, run this from
   multiple terminals, where each instance will represent a node
+- Run `mvn clean package docker:build` to build docker image, and then run `docker run infinispan-embedded-tutorial/infinispan-embedded-tutorial` in 2 different terminals to simulate multiple nodes of distributed cache
 
 ## Application Directory Layout
 
+    docker/             -->
     src/                -->
       main/             -->
         java/           -->

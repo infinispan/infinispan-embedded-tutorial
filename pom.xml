@@ -52,6 +52,28 @@
             </configuration>
         </plugin>
         <plugin>
+         <groupId>org.apache.maven.plugins</groupId>
+         <artifactId>maven-assembly-plugin</artifactId>
+         <executions>
+           <execution>
+             <phase>package</phase>
+             <goals>
+               <goal>single</goal>
+             </goals>
+           </execution>
+         </executions>
+         <configuration>
+           <descriptorRefs>
+             <descriptorRef>jar-with-dependencies</descriptorRef>
+           </descriptorRefs>
+           <archive>
+             <manifest>
+               <mainClass>org.infinispan.tutorial.embedded.WeatherApp</mainClass>
+             </manifest>
+           </archive>
+         </configuration>
+        </plugin>
+        <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>exec-maven-plugin</artifactId>
             <version>1.6.0</version>
@@ -72,8 +94,28 @@
                    <argument>org.infinispan.tutorial.embedded.WeatherApp</argument>
                </arguments>
             </configuration>
-         </plugin>
-      </plugins>
+        </plugin>
+        <plugin>
+            <groupId>com.spotify</groupId>
+            <artifactId>docker-maven-plugin</artifactId>
+            <version>1.2.0</version>
+            <configuration>
+                <skipDockerBuild>false</skipDockerBuild>
+                <imageName>infinispan-embedded-tutorial/${project.artifactId}</imageName>
+                <imageTags>
+                  <imageTag>${project.version}</imageTag>
+                </imageTags>
+                <dockerDirectory>${project.basedir}/docker</dockerDirectory>
+                <resources>
+                  <resource>
+                    <targetPath>/</targetPath>
+                    <directory>${project.build.directory}</directory>
+                    <include>${project.build.finalName}-jar-with-dependencies.jar</include>
+                  </resource>
+                </resources>
+            </configuration>
+        </plugin>
+     </plugins>
    </build>
 </project>
 

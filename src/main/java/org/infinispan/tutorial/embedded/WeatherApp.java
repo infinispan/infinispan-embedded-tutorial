@@ -89,7 +89,7 @@ public class WeatherApp {
             app.computeCountryAverages();
          }
       } catch (Exception e) {
-         e.printStackTrace();
+         System.out.println("Problem while execution app coordinator : " + e.getMessage());
       }finally {
          app.shutdown();
       }

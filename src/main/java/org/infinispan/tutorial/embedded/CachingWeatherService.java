@@ -10,7 +10,7 @@ public abstract class CachingWeatherService implements WeatherService {
    }
 
    @Override
-   final public LocationWeather getWeatherForLocation(String location) throws Exception {
+   final public LocationWeather getWeatherForLocation(String location) {
       LocationWeather weather = cache.get(location);
       if (weather == null) {
          weather = fetchWeather(location);
@@ -19,5 +19,5 @@ public abstract class CachingWeatherService implements WeatherService {
       return weather;
    }
 
-   protected abstract LocationWeather fetchWeather(String location) throws Exception;
+   protected abstract LocationWeather fetchWeather(String location);
 }

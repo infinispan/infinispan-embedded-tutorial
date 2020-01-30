@@ -50,11 +50,11 @@ public class OpenWeatherMapService extends CachingWeatherService {
    }
 
    @Override
-   protected LocationWeather fetchWeather(String location) throws Exception {
+   protected LocationWeather fetchWeather(String location) {
 
       Document dom = fetchData(location);
       if (dom == null) {
-         throw new Exception("Unable to reach or get response from open weather service with given OWMAPIKEY : please try with valid OWMAPIKEY or use Random Weather Service");
+         throw new RuntimeException("Unable to reach or get response from open weather service with given OWMAPIKEY : please try with valid OWMAPIKEY or use Random Weather Service");
       }
       Element current = (Element) dom.getElementsByTagName("current").item(0);
       Element temperature = (Element) current.getElementsByTagName("temperature").item(0);

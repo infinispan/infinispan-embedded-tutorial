@@ -6,7 +6,10 @@
       
       <cache-container default-cache="weather">
           <transport cluster="WeatherApp"/>
-          
+          <serialization>
+            <context-initializer class="org.infinispan.tutorial.embedded.SerializationContextInitializerImpl" />
+          </serialization>
+
           <distributed-cache name="weather">
             <expiration lifespan="5000"/>
             <groups enabled="true">

@@ -45,7 +45,7 @@ public class WeatherApp {
       }
    }
 
-   public void fetchWeather() {
+   public void fetchWeather(){
       System.out.println("---- Fetching weather information ----");
       long start = System.currentTimeMillis();
       for (String location : locations) {
@@ -74,21 +74,23 @@ public class WeatherApp {
 
    public static void main(String[] args) throws Exception {
       WeatherApp app = new WeatherApp();
+      try {
+         if (app.cacheManager.isCoordinator()) {
 
-      if (app.cacheManager.isCoordinator()) {
+            app.fetchWeather();
 
-         app.fetchWeather();
+            app.fetchWeather();
 
-         app.fetchWeather();
+            TimeUnit.SECONDS.sleep(5);
 
-         TimeUnit.SECONDS.sleep(5);
+            app.fetchWeather();
 
-         app.fetchWeather();
-
-         app.computeCountryAverages();
+            app.computeCountryAverages();
+         }
+      } finally {
+         app.shutdown();
       }
 
-      app.shutdown();
    }
 
 }
